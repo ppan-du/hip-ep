@@ -179,6 +179,10 @@ Dynamic dimensions are encoded as `-1`.
 
 ## Generated-Code Runtime Inputs
 
+A constant-only graph can have zero runtime inputs. Graph input enumeration must
+return an empty list in that case; constants remain initializers and graph
+outputs retain the usual allocation contract.
+
 Some compiler/runtime coupling is encoded directly in generated LLVM calls
 rather than serialized in `model_metadata.fbs`. These contracts are internal to
 the compiled model and are documented by the design that owns the lowering.
