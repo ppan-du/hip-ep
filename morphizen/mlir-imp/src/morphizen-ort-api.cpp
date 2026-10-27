@@ -226,7 +226,8 @@ static void initialize_mlir_api() {
       -> morphizen::DllSafe<std::vector<const morphizen::NodeArg *>> {
     auto *mlir_graph = reinterpret_cast<const mlir_impl::MLIRGraph *>(&graph);
     auto inputs = mlir_graph->get_inputs();
-    CHECK(!inputs.empty()) << "MLIRGraph inputs are empty ";
+    // Constant-only graphs legitimately have no runtime inputs. Preserve the
+    // empty list rather than rejecting the graph or inventing an input.
     auto result = new std::vector<const morphizen::NodeArg *>();
     result->reserve(inputs.size());
     for (const auto &value : inputs) {

@@ -94,3 +94,16 @@ add_test(NAME QLpNormalizationRefUnit
 set_target_properties(test-qlpnormalization-ref PROPERTIES
   FOLDER "mlir/Test/Dialect/Hipsr"
 )
+
+# The public MLIR graph-input API must accept constant-only graphs.
+add_executable(test-mlir-graph-inputs test_mlir_graph_inputs.cpp)
+target_compile_features(test-mlir-graph-inputs PRIVATE cxx_std_17)
+target_include_directories(test-mlir-graph-inputs PRIVATE
+  ${MLIR_INCLUDE_DIRS}
+  ${LLVM_INCLUDE_DIRS}
+  ${CMAKE_SOURCE_DIR}/morphizen/mlir-imp/src
+)
+target_link_libraries(test-mlir-graph-inputs PRIVATE
+  mlir-imp morphizen-ort-api-ext MLIRParser MLIRFuncDialect MLIRIR MLIRSupport
+)
+add_test(NAME MlirGraphInputsUnit COMMAND test-mlir-graph-inputs)
