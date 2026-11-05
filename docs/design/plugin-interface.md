@@ -207,6 +207,24 @@ follow explicitly ordered producer carriers in stable module walk order. Later
 slots must not emit carriers; the pipeline diagnoses any `hip.constant` that
 survives to `BeforeBufferization`.
 
+### Imported operator versions
+
+The MorphiZen MLIR importer records the operator-set versions of the compiled
+graph on the module, mirroring `ModelProto.opset_import`:
+
+```mlir
+module attributes {onnx.opset_import = {"ai.onnx" = 18 : i64, "com.microsoft" = 1 : i64}} {
+```
+
+The default domain is spelled `ai.onnx`. Each value is the newest
+`since_version` that ONNX Runtime resolved for a node of that domain in the
+graph handed to the EP, so it reaches a given version exactly when a node in
+the graph uses that version's schema. Passes at the ONNX slots
+(`AfterSimplifyOnnx`, `AfterOnnxLoopOutline`) can consult it when ONNX
+Runtime's reference behavior for an operator depends on the operator version.
+Modules that were not imported from an ONNX Runtime graph, such as hand-written
+LIT inputs, carry no attribute; treat its absence as unknown.
+
 ## How the host dispatches plugins
 
 Selected plugins are linked statically into the host; the CMake-generated

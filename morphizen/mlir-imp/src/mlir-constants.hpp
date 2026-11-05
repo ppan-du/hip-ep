@@ -37,6 +37,10 @@ namespace attr_names {
 constexpr const char *ONNX_GRAPH_NAME = "onnx.graph.name";
 // "node.outputs" to represent NodeProto.output (outputs NodeArg Name)
 constexpr const char *NODE_OUTPUTS = "node.outputs";
+// "onnx.opset_import" on the module to represent ModelProto.opset_import:
+// a dictionary from domain (default domain spelled "ai.onnx") to its i64
+// opset version.
+constexpr const char *ONNX_OPSET_IMPORT = "onnx.opset_import";
 // "morphizen.placeholder" for placeholder operations in attributes
 constexpr const char *MORPHIZEN_PLACEHOLDER = "morphizen.placeholder";
 

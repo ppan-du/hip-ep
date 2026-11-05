@@ -82,12 +82,20 @@ std::unique_ptr<MLIRModel> MLIRModel::create_empty(
     // model->main_graph().set_model_path(path);
   }
 
-  // Set opset information as metadata
+  // Set opset information as metadata, and on the module so compiler passes
+  // can see the operator versions the graph was resolved against.
   if (!opset.empty()) {
+    llvm::SmallVector<mlir::NamedAttribute> versions;
     for (const auto &[domain, version] : opset) {
       std::string key = "opset." + domain;
       model->set_metadata_prop(key, std::to_string(version));
+      // Attribute names must be non-empty; spell the default domain out.
+      versions.push_back(
+          builder.getNamedAttr(domain.empty() ? "ai.onnx" : domain,
+                               builder.getI64IntegerAttr(version)));
     }
+    module->setAttr(attr_names::ONNX_OPSET_IMPORT,
+                    builder.getDictionaryAttr(versions));
   }
 
   // Debug: Save empty module if debug level > 5
